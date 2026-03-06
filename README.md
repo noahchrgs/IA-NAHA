@@ -29,7 +29,6 @@ Nutritional Mapping: Linking predicted recovery states to specific food recommen
 # -https://ciqual.anses.fr/#/cms/telechargement/node/20 
 # -https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset/data 
 # -https://www.kaggle.com/datasets/valakhorasani/gym-members-exercise-dataset 
-# -https://www.kaggle.com/datasets/evan65549/health-and-fitness-dataset
 
 ## 🏗️ Project Architecture
      IA-NAHA/
