@@ -4,11 +4,11 @@
 // Placer dans : htdocs/ia-naha/api/config.php
 // ─────────────────────────────────────────────
 
-define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');      // MAMP utilise parfois 8889, vérifie dans MAMP > Préférences > Ports
-define('DB_NAME', 'ia-naha');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');      // mot de passe par défaut MAMP
+const DB_HOST = 'localhost';
+const DB_PORT = '8888';      // MAMP utilise parfois 8889, vérifie dans MAMP > Préférences > Ports
+const DB_NAME = 'ia-naha';
+const DB_USER = 'root';
+const DB_PASS = 'root';      // mot de passe par défaut MAMP
 
 function getDB() {
     static $pdo = null;

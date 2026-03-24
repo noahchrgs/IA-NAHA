@@ -261,7 +261,7 @@
 
 <div class="wrap">
   <nav class="nav">
-    <a href="dashboard.html">→ Dashboard</a>
+    <a href="dash.html">→ Dashboard</a>
   </nav>
 
   <header class="header">
@@ -391,9 +391,9 @@
 // ─────────────────────────────────────────────
 // CONFIG
 // ─────────────────────────────────────────────
-const GEMINI_API_KEY = "AIzaSyCp8HyL_3T7tTLW5mcyAn7_KaB4lJYCaDQ";
+const GEMINI_API_KEY = "AIzaSyDZG9ME88efq2bBkZOjWewKBfqsNYC2hzA";
 const GEMINI_MODEL   = "gemini-2.5-flash";
-const API_BASE       = "http://localhost:8888/SD4/IA-NAHA/Application/api";
+const API_BASE       = "http://localhost:8888/Applications/MAMP/htdocs/SD4/IA-NAHA/Application/api/";
 
 // ─────────────────────────────────────────────
 // CIQUAL DATA (2976 aliments ANSES)
@@ -690,7 +690,7 @@ async function savePlan() {
     btn.classList.add("saved");
 
     setTimeout(() => {
-  window.location.href = `http://localhost:8888/SD4/IA-NAHA/Application/dash.html?user_id=${data.user_id}`;
+  window.location.href = `http://localhost:8888/SD4/Applications/MAMP/htdocs/SD4/IA-NAHA/Application/dash.html?user_id=${data.user_id}`;
 }, 1500);
 
 
