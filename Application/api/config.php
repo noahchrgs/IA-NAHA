@@ -10,11 +10,31 @@ ob_start();
 error_reporting(0);
 ini_set('display_errors', '0');
 
-define('DB_HOST', 'localhost');
-define('DB_PORT', '8889');       // MAMP = 8889, XAMPP = 3306
-define('DB_NAME', 'ia-naha');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
+// Détection de l'environnement : sommes-nous en local ?
+$isLocal = in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']);
+
+if ($isLocal) {
+    // REGLAGES POUR MAMP (Local)
+    define('DB_HOST', '127.0.0.1'); // Fonctionne mieux sur Windows et Mac
+    define('DB_NAME', 'ia-naha');
+    define('DB_USER', 'root');
+    define('DB_PASS', 'root'); // MAMP utilise toujours root par défaut
+
+    // Détection automatique : Mac ou Windows ?
+    if (PHP_OS_FAMILY === 'Darwin') {
+        define('DB_PORT', '8889'); // Port par défaut sur le Mac de ton collègue
+    } else {
+        define('DB_PORT', '3306'); // Port par défaut sur ton Windows
+    }
+} else {
+    // REGLAGES POUR LE SERVEUR EN LIGNE (Production)
+    // À remplir le jour où tu mettras le site sur internet
+    define('DB_HOST', 'localhost');
+    define('DB_PORT', '3306'); 
+    define('DB_NAME', 'nom_de_la_base_en_ligne');
+    define('DB_USER', 'utilisateur_en_ligne');
+    define('DB_PASS', 'mot_de_passe_en_ligne');
+}
 
 // Headers CORS + JSON
 header('Content-Type: application/json; charset=utf-8');
