@@ -119,9 +119,15 @@
   const API_BASE = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
 
   // ──────────────────────────────────────────────
-  // CIQUAL (2976 aliments — tronqué ici pour lisibilité, embarqué complet)
+  // CIQUAL — chargé dynamiquement depuis la BD via ciqual.php
   // ──────────────────────────────────────────────
-  const CIQUAL = [{"g":"fromages et alternatives végétales","n":"Spécialité végétale type fromage à tartiner, au soja, préemballée","c":174.0,"p":11.7,"gl":1.0,"l":13.1,"f":0.5},{"g":"pommes de terre et autres tubercules","n":"Pomme de terre, bouillie/cuite à l'eau","c":81.0,"p":1.8,"gl":16.8,"l":0.3,"f":1.8},{"g":"pâtes, riz et céréales","n":"Riz blanc, cuit, sans sel ajouté","c":155.0,"p":3.2,"gl":33.2,"l":0.7,"f":1.4},{"g":"pâtes, riz et céréales","n":"Pâtes sèches, standard, cuites, sans sel ajouté","c":167.0,"p":6.1,"gl":31.4,"l":1.1,"f":2.2},{"g":"pâtes, riz et céréales","n":"Quinoa, bouilli/cuit à l'eau, sans sel ajouté","c":149.0,"p":4.7,"gl":27.9,"l":1.1,"f":3.8},{"g":"légumineuses","n":"Lentille, bouillie/cuite à l'eau (aliment moyen)","c":125.0,"p":10.1,"gl":16.2,"l":0.6,"f":8.4},{"g":"légumineuses","n":"Pois chiche, bouilli/cuit à l'eau","c":148.0,"p":8.3,"gl":17.7,"l":3.0,"f":8.2},{"g":"légumineuses","n":"Haricot blanc, bouilli/cuit à l'eau","c":112.0,"p":6.8,"gl":12.0,"l":1.1,"f":13.8},{"g":"viandes crues","n":"Poulet, filet sans peau cru","c":110.0,"p":23.4,"gl":0.0,"l":1.5,"f":0.0},{"g":"viandes cuites","n":"Poulet, filet sans peau grillé/poêlé","c":141.0,"p":30.1,"gl":0.0,"l":2.0,"f":0.0},{"g":"viandes crues","n":"Dinde, escalope crue","c":108.0,"p":23.7,"gl":0.0,"l":1.5,"f":0.0},{"g":"viandes cuites","n":"Dinde, escalope grillée/poêlée","c":124.0,"p":28.5,"gl":0.0,"l":1.1,"f":0.0},{"g":"viandes crues","n":"Boeuf, steak haché 5% MG cru","c":130.0,"p":21.9,"gl":0.3,"l":4.6,"f":0.0},{"g":"viandes cuites","n":"Boeuf, steak haché 5% MG cuit","c":155.0,"p":25.5,"gl":0.0,"l":5.8,"f":0.0},{"g":"viandes cuites","n":"Boeuf, rumsteck grillé/poêlé","c":138.0,"p":29.0,"gl":0.0,"l":2.1,"f":0.0},{"g":"poissons crus","n":"Saumon, élevage, cru","c":193.0,"p":20.5,"gl":0.0,"l":12.4,"f":0.2},{"g":"poissons cuits","n":"Saumon, cuit à la vapeur","c":199.0,"p":23.0,"gl":0.9,"l":11.5,"f":0.0},{"g":"poissons crus","n":"Cabillaud, cru","c":77.4,"p":18.1,"gl":0.0,"l":0.6,"f":0.2},{"g":"poissons cuits","n":"Cabillaud, cuit à la vapeur","c":106.0,"p":24.5,"gl":0.0,"l":1.0,"f":0.0},{"g":"poissons crus","n":"Thon, cru","c":155.0,"p":24.0,"gl":2.7,"l":5.4,"f":0.0},{"g":"produits à base de poissons et produits de la mer","n":"Thon, au naturel, appertisé, égoutté","c":143.0,"p":26.8,"gl":0.0,"l":3.9,"f":0.0},{"g":"oeufs","n":"Oeuf cru","c":140.0,"p":12.8,"gl":0.1,"l":9.8,"f":0.0},{"g":"oeufs","n":"Oeuf dur","c":134.0,"p":13.5,"gl":0.5,"l":8.6,"f":0.0},{"g":"fromages et alternatives végétales","n":"Fromage blanc, nature, 0% MG","c":48.4,"p":7.3,"gl":4.2,"l":0.1,"f":0.0},{"g":"fromages et alternatives végétales","n":"Fromage blanc, nature, 2-3% MG","c":75.7,"p":7.3,"gl":3.9,"l":3.2,"f":0.0},{"g":"produits laitiers frais et alternatives végétales","n":"Yaourt ou lait fermenté, nature, 0% MG","c":39.1,"p":4.2,"gl":4.9,"l":0.1,"f":0.0},{"g":"produits laitiers frais et alternatives végétales","n":"Yaourt ou lait fermenté, nature","c":50.1,"p":3.8,"gl":4.3,"l":1.7,"f":0.0},{"g":"laits","n":"Lait demi-écrémé, UHT","c":47.7,"p":3.5,"gl":5.0,"l":1.6,"f":0.0},{"g":"fruits","n":"Banane, chair sans peau, crue","c":87.6,"p":1.1,"gl":19.7,"l":0.5,"f":2.7},{"g":"fruits","n":"Pomme, chair et peau, crue","c":54.0,"p":0.2,"gl":11.6,"l":0.2,"f":1.4},{"g":"fruits","n":"Orange, chair sans peau, sans pépins, crue","c":42.0,"p":0.8,"gl":8.0,"l":0.5,"f":2.7},{"g":"fruits","n":"Fraise, crue","c":35.1,"p":0.6,"gl":6.0,"l":0.5,"f":3.8},{"g":"fruits","n":"Myrtille, crue","c":57.7,"p":0.9,"gl":10.6,"l":0.3,"f":2.4},{"g":"fruits","n":"Kiwi, chair sans peau, avec pépins, cru","c":60.9,"p":0.9,"gl":11.0,"l":0.6,"f":2.4},{"g":"fruits","n":"Mangue, chair sans peau, sans noyau, crue","c":71.1,"p":0.6,"gl":14.3,"l":0.5,"f":1.6},{"g":"légumes","n":"Épinard, cuit","c":19.6,"p":3.2,"gl":0.2,"l":0.1,"f":2.7},{"g":"légumes","n":"Brocoli, bouilli/cuit à l'eau (aliment moyen)","c":21.8,"p":2.2,"gl":1.0,"l":0.5,"f":3.0},{"g":"légumes","n":"Carotte, bouillie/cuite à l'eau (aliment moyen)","c":29.6,"p":0.2,"gl":5.7,"l":0.3,"f":3.3},{"g":"légumes","n":"Tomate ronde, crue","c":17.5,"p":0.5,"gl":3.4,"l":0.5,"f":1.0},{"g":"légumes","n":"Courgette, chair et peau, cuite","c":15.5,"p":0.9,"gl":1.4,"l":0.4,"f":1.5},{"g":"légumes","n":"Haricot vert, cuit","c":29.4,"p":2.0,"gl":3.0,"l":0.2,"f":4.0},{"g":"légumes","n":"Poivron, vert, jaune ou rouge, cru","c":22.6,"p":0.8,"gl":3.5,"l":0.3,"f":1.5},{"g":"légumes","n":"Champignon de Paris ou champignon de couche, cru","c":21.0,"p":2.1,"gl":1.8,"l":0.4,"f":1.0},{"g":"légumes","n":"Concombre, chair et peau, cru","c":16.8,"p":0.6,"gl":2.9,"l":0.1,"f":0.5},{"g":"légumes","n":"Laitue, crue","c":14.7,"p":1.4,"gl":1.2,"l":0.2,"f":1.1},{"g":"légumes","n":"Avocat, chair sans peau, sans noyau, cru","c":203.0,"p":1.6,"gl":0.0,"l":20.6,"f":3.6},{"g":"légumes","n":"Petits pois, cuits","c":61.4,"p":5.8,"gl":4.7,"l":0.9,"f":5.8},{"g":"légumes","n":"Oignon, cru","c":39.0,"p":1.1,"gl":6.2,"l":0.6,"f":1.7},{"g":"pains et assimilés","n":"Pain blanc (par ex. : baguette, boule)","c":287.0,"p":8.3,"gl":58.3,"l":1.4,"f":2.7},{"g":"pains et assimilés","n":"Pain complet ou intégral (à la farine T150)","c":234.0,"p":8.7,"gl":41.2,"l":1.7,"f":7.3},{"g":"céréales de petit-déjeuner","n":"Flocons d'avoine","c":369.0,"p":10.6,"gl":57.7,"l":7.8,"f":11.2},{"g":"fruits à coque et graines oléagineuses","n":"Amande, avec peau, sans sel ajouté","c":615.0,"p":18.8,"gl":9.5,"l":51.3,"f":12.5},{"g":"fruits à coque et graines oléagineuses","n":"Noix, cerneau, séchée","c":709.0,"p":13.3,"gl":6.9,"l":67.3,"f":6.7},{"g":"fruits à coque et graines oléagineuses","n":"Noix de cajou, grillée, sans sel ajouté","c":618.0,"p":17.4,"gl":21.3,"l":48.1,"f":8.4},{"g":"huiles et graisses végétales","n":"Huile d'olive vierge extra","c":899.0,"p":0.2,"gl":0.0,"l":99.9,"f":0.0},{"g":"huiles et graisses végétales","n":"Huile de colza","c":900.0,"p":0.0,"gl":0.0,"l":100.0,"f":0.0},{"g":"beurres","n":"Beurre à 80% MG minimum, doux","c":753.0,"p":0.6,"gl":0.7,"l":83.0,"f":0.0},{"g":"ingrédients pour végétariens","n":"Tofu nature, préemballé","c":147.0,"p":13.4,"gl":2.9,"l":8.5,"f":0.5},{"g":"ingrédients pour végétariens","n":"Tofu soyeux, préemballé","c":54.3,"p":4.6,"gl":1.5,"l":2.9,"f":0.6},{"g":"ingrédients pour végétariens","n":"Tempeh","c":157.0,"p":16.1,"gl":7.9,"l":4.7,"f":6.2},{"g":"sucres, miels et assimilés","n":"Miel","c":331.0,"p":0.6,"gl":82.1,"l":0.0,"f":0.0},{"g":"sucres, miels et assimilés","n":"Sucre blanc","c":399.0,"p":0.0,"gl":99.7,"l":0.0,"f":0.0},{"g":"pommes de terre et autres tubercules","n":"Patate douce, cuite","c":79.1,"p":1.7,"gl":16.3,"l":0.2,"f":2.9},{"g":"charcuteries et alternatives végétales","n":"Jambon cuit, supérieur","c":113.0,"p":21.0,"gl":0.8,"l":2.8,"f":0.2},{"g":"charcuteries et alternatives végétales","n":"Jambon de dinde ou blanc de dinde en tranche","c":99.3,"p":20.9,"gl":0.0,"l":1.7,"f":0.4},{"g":"produits à base de poissons et produits de la mer","n":"Sardine, à l'huile, appertisée, égouttée","c":217.0,"p":23.3,"gl":0.3,"l":13.7,"f":0.0},{"g":"produits à base de poissons et produits de la mer","n":"Saumon fumé","c":184.0,"p":22.2,"gl":0.1,"l":10.5,"f":0.3},{"g":"fromages et alternatives végétales","n":"Emmental ou emmenthal","c":373.0,"p":27.9,"gl":0.0,"l":28.8,"f":0.0},{"g":"fromages et alternatives végétales","n":"Mozzarella au lait de vache","c":227.0,"p":16.5,"gl":0.7,"l":17.7,"f":0.0},{"g":"condiments","n":"Moutarde","c":151.0,"p":6.9,"gl":4.3,"l":11.2,"f":1.0},{"g":"herbes","n":"Ail, cru","c":109.0,"p":5.3,"gl":18.6,"l":0.5,"f":5.8},{"g":"épices","n":"Curry, poudre","c":301.0,"p":14.5,"gl":2.6,"l":14.0,"f":53.2},{"g":"épices","n":"Curcuma, poudre","c":291.0,"p":9.7,"gl":44.4,"l":3.2,"f":22.7},{"g":"aides culinaires","n":"Lait de coco","c":199.0,"p":1.9,"gl":4.3,"l":19.2,"f":0.8}];
+  let CIQUAL = [];
+
+  // ──────────────────────────────────────────────
+  // AUTH
+  // ──────────────────────────────────────────────
+  const getToken    = () => localStorage.getItem('naha_token') || '';
+  const authHeaders = (extra={}) => ({ 'Content-Type':'application/json', 'Authorization':'Bearer '+getToken(), 'X-Auth-Token': getToken(), ...extra });
 
   // ──────────────────────────────────────────────
   // STATE
@@ -274,11 +280,12 @@ RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
   async function callGemini(prompt) {
     const res = await fetch(`${API_BASE}/gemini.php`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ prompt }),
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e?.error || 'Erreur serveur Gemini'); }
     const data = await res.json();
+    console.log('[Gemini debug]', data._debug);
     if (data.error) throw new Error(data.error);
     let text = data.text || '';
     text = text.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
@@ -316,8 +323,14 @@ RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
     activateStep(1); animateProgress(0, 15, 800);
     await sleep(800);
 
-    // Step 2
+    // Step 2 — chargement CIQUAL depuis la BD
     activateStep(2); animateProgress(15, 35, 600);
+    try {
+      const ciqualRes = await fetch(`${API_BASE}/ciqual.php`);
+      CIQUAL = await ciqualRes.json();
+    } catch (e) {
+      CIQUAL = [];
+    }
     await sleep(600);
 
     // Step 3
@@ -511,9 +524,8 @@ RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
     try {
       const res = await fetch(`${API_BASE}/save_plan.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({
-          user_id: uid,
           profil,
           plan: currentPlan,
           temps_sommeil: parseFloat(sessionStorage.getItem('naha_sleep_prediction')) || null,
@@ -567,8 +579,13 @@ RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // ── START ──
-  generate();
+  // ── AUTH GUARD ──
+  if (!getToken()) {
+    localStorage.setItem('naha_redirect', window.location.href);
+    window.location.href = 'login.html';
+  } else {
+    generate();
+  }
 </script>
 </body>
 </html>

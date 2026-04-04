@@ -4,8 +4,8 @@
 // ─────────────────────────────────────────────
 require_once __DIR__ . '/config.php';
 
+$userId = requireAuth();
 $pdo    = getPDO();
-$userId = (int)($_GET['user_id'] ?? 0);
 $planId = (int)($_GET['plan_id'] ?? 0);
 
 // ── Détail d'un plan ──
@@ -15,10 +15,10 @@ if ($planId) {
                u.age, u.gender, u.poids, u.taille, u.intensity, u.objectif, u.restrictions
         FROM nutrition_plans np
         JOIN users u ON u.id = np.user_id
-        WHERE np.id = ?
+        WHERE np.id = ? AND np.user_id = ?
         LIMIT 1
     ');
-    $stmt->execute([$planId]);
+    $stmt->execute([$planId, $userId]);
     $plan = $stmt->fetch();
 
     if (!$plan) jsonOut(['error' => 'Plan introuvable'], 404);

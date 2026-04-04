@@ -18,14 +18,23 @@ if (!$prompt) {
 }
 
 // ── Clé API Gemini (côté serveur uniquement) ──
-define('GEMINI_API_KEY', 'AIzaSyBJt3FwkC6jZEabXv_HF8wA1ygMsDoe11A');
+$_env = parse_ini_file(__DIR__ . '/../.env') ?: [];
+define('GEMINI_API_KEY', $_env['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?: '');
 define('GEMINI_MODEL',   'gemini-2.5-flash');
+
+if (!GEMINI_API_KEY) {
+    jsonOut(['error' => 'Clé API Gemini manquante — configure le fichier .env'], 500);
+}
 
 $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent?key=' . GEMINI_API_KEY;
 
 $payload = json_encode([
-    'contents'       => [['parts' => [['text' => $prompt]]]],
-    'generationConfig' => ['maxOutputTokens' => 65536, 'temperature' => 0.3],
+    'contents'         => [['parts' => [['text' => $prompt]]]],
+    'generationConfig' => [
+        'maxOutputTokens' => 65536,
+        'temperature'     => 0.3,
+        'thinkingConfig'  => ['thinkingBudget' => 0], // désactive le thinking → 1 seul part, réponse directe
+    ],
 ]);
 
 $ch = curl_init($url);
@@ -53,10 +62,40 @@ if ($httpCode !== 200) {
     jsonOut(['error' => $msg], 502);
 }
 
-$text = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
+// Gemini 2.5 renvoie plusieurs parts quand le "thinking" est actif :
+// parts[0] = réflexion interne (thought:true), parts[N] = vraie réponse.
+// On prend le dernier part dont thought != true.
+$parts = $data['candidates'][0]['content']['parts'] ?? [];
+$text  = '';
+foreach (array_reverse($parts) as $part) {
+    if (!($part['thought'] ?? false) && isset($part['text'])) {
+        $text = $part['text'];
+        break;
+    }
+}
+if ($text === '') {
+    $text = end($parts)['text'] ?? '';
+}
 
 ob_clean();
 http_response_code(200);
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode(['text' => $text], JSON_UNESCAPED_UNICODE);
+// JSON_INVALID_UTF8_SUBSTITUTE n'existe qu'en PHP 7.2+, on vérifie
+$flags = JSON_UNESCAPED_UNICODE;
+if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) $flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+
+// Nettoyage UTF-8 si nécessaire
+$text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+
+$out = json_encode([
+    'text'   => $text,
+    '_debug' => [
+        'httpCode'     => $httpCode,
+        'partsCount'   => count($parts),
+        'finishReason' => $data['candidates'][0]['finishReason'] ?? 'unknown',
+        'textPreview'  => mb_substr($text, 0, 300),
+    ],
+], $flags);
+if ($out === false) { $out = '{"text":"","_debug":{"error":"json_encode failed"}}'; }
+echo $out;
 exit;

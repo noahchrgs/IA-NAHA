@@ -9,12 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonOut(['error' => 'Méthode non autorisée'], 405);
 }
 
+$userId = requireAuth();
 $body   = getBody();
-$userId = (int)($body['user_id'] ?? 0);
-
-if (!$userId) {
-    jsonOut(['error' => 'user_id manquant'], 422);
-}
 
 // ── Encodages catégoriels (mêmes que le modèle ML) ──────────────────────────
 function encodeGender(string $v): int {
@@ -87,7 +83,7 @@ try {
         $userId,
     ]);
 } catch (\Throwable $e) {
-    jsonOut(['error' => 'Erreur mise à jour profil : ' . $e->getMessage()], 500);
+    jsonOut(['error' => 'Erreur lors de la mise à jour du profil.'], 500);
 }
 
 jsonOut(['success' => true, 'message' => 'Profil mis à jour.']);

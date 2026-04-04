@@ -13,7 +13,7 @@ import pandas as pd
 from flask import Flask, request, jsonify
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_DIR = os.path.join(BASE_DIR, '..', 'modeles')
+MODEL_DIR = os.path.join(BASE_DIR, '..', '..', 'modeles')
 
 app = Flask(__name__)
 

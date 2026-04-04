@@ -1,6 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 set_exception_handler(function($e) {
     ob_clean();
     http_response_code(500);
@@ -20,18 +18,17 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 // ─────────────────────────────────────────────
 require_once __DIR__ . '/config.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonOut(['error' => 'Méthode non autorisée'], 405);
 }
 
+$userId = requireAuth();
 $body   = getBody();
 $profil = $body['profil'] ?? [];
 $plan   = $body['plan']   ?? [];
-$userId = (int)($body['user_id'] ?? 0);
 
-if (!$plan || !$userId) {
-    jsonOut(['error' => 'Données manquantes (user_id ou plan)'], 422);
+if (!$plan) {
+    jsonOut(['error' => 'Données manquantes (plan)'], 422);
 }
 
 $pdo = getPDO();

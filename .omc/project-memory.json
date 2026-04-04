@@ -1,0 +1,207 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775299155654,
+  "projectRoot": "/Applications/MAMP/htdocs/SD4/IA-NAHA",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "Application": {
+      "path": "Application",
+      "purpose": null,
+      "fileCount": 14,
+      "lastAccessed": 1775299155600,
+      "keyFiles": [
+        "README.md",
+        "dashboard.html",
+        "dataviz.html",
+        "generate.html",
+        "index.html"
+      ]
+    },
+    "Orange_results": {
+      "path": "Orange_results",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1775299155614,
+      "keyFiles": [
+        "Importance_Variable.png",
+        "Orange_Global.png",
+        "Orange_Modèle.ows",
+        "Regression.png",
+        "Resultat_Modèle.png"
+      ]
+    },
+    "data": {
+      "path": "data",
+      "purpose": "Data files",
+      "fileCount": 1,
+      "lastAccessed": 1775299155616,
+      "keyFiles": []
+    },
+    "database": {
+      "path": "database",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775299155617,
+      "keyFiles": [
+        "MCD.png",
+        "ia-naha.sql"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 2,
+      "lastAccessed": 1775299155618,
+      "keyFiles": [
+        "index.py"
+      ]
+    },
+    "Application/api": {
+      "path": "Application/api",
+      "purpose": "API routes",
+      "fileCount": 13,
+      "lastAccessed": 1775299155619,
+      "keyFiles": [
+        "ciqual.php",
+        "config.php",
+        "delete_plan.php"
+      ]
+    },
+    "Application/assets": {
+      "path": "Application/assets",
+      "purpose": "Static assets",
+      "fileCount": 0,
+      "lastAccessed": 1775299155620,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "Application/api/gemini.php",
+      "accessCount": 8,
+      "lastAccessed": 1775300084348,
+      "type": "file"
+    },
+    {
+      "path": "Notebook_DataViz.ipynb",
+      "accessCount": 7,
+      "lastAccessed": 1775300939230,
+      "type": "directory"
+    },
+    {
+      "path": "Application/api/config.php",
+      "accessCount": 4,
+      "lastAccessed": 1775300471608,
+      "type": "file"
+    },
+    {
+      "path": "Application/generate.html",
+      "accessCount": 4,
+      "lastAccessed": 1775300572373,
+      "type": "file"
+    },
+    {
+      "path": "Application/onboarding.html",
+      "accessCount": 3,
+      "lastAccessed": 1775300460301,
+      "type": "directory"
+    },
+    {
+      "path": "database/ia-naha.sql",
+      "accessCount": 2,
+      "lastAccessed": 1775299292033,
+      "type": "directory"
+    },
+    {
+      "path": "Application/api/.htaccess",
+      "accessCount": 2,
+      "lastAccessed": 1775300205651,
+      "type": "file"
+    },
+    {
+      "path": "Application/dashboard.html",
+      "accessCount": 2,
+      "lastAccessed": 1775300418148,
+      "type": "file"
+    },
+    {
+      "path": "Application/dataviz.html",
+      "accessCount": 2,
+      "lastAccessed": 1775301388093,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/ml_server.py",
+      "accessCount": 2,
+      "lastAccessed": 1775302124063,
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 2,
+      "lastAccessed": 1775302482877,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/save_plan.php",
+      "accessCount": 1,
+      "lastAccessed": 1775299206753,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/save_profile.php",
+      "accessCount": 1,
+      "lastAccessed": 1775299207211,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/login.php",
+      "accessCount": 1,
+      "lastAccessed": 1775299226047,
+      "type": "file"
+    },
+    {
+      "path": "Application/login.html",
+      "accessCount": 1,
+      "lastAccessed": 1775299227061,
+      "type": "file"
+    },
+    {
+      "path": "Application/api",
+      "accessCount": 1,
+      "lastAccessed": 1775302091911,
+      "type": "directory"
+    }
+  ],
+  "userDirectives": []
+}

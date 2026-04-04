@@ -18,9 +18,11 @@ define('DB_PASS', 'root');
 
 // Headers CORS + JSON
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+$_allowed_origins = ['http://localhost:8888','http://127.0.0.1:8888','http://localhost','http://127.0.0.1'];
+$_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+header('Access-Control-Allow-Origin: ' . (in_array($_origin, $_allowed_origins, true) ? $_origin : 'http://localhost:8888'));
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Auth-Token');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -60,4 +62,44 @@ function jsonOut(array $data, int $code = 200): void {
 function getBody(): array {
     $raw = file_get_contents('php://input');
     return json_decode($raw, true) ?? [];
+}
+
+// Auth — valide le token Bearer et retourne le user_id
+function requireAuth(): int {
+    // Plusieurs fallbacks pour MAMP/Apache qui bloque parfois Authorization
+    $auth = $_SERVER['HTTP_AUTHORIZATION']
+         ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+         ?? '';
+    if (!$auth && function_exists('getallheaders')) {
+        $h    = array_change_key_case(getallheaders(), CASE_LOWER);
+        $auth = $h['authorization'] ?? '';
+    }
+    $token = trim(str_replace('Bearer', '', $auth));
+
+    // Fallback : header custom X-Auth-Token (jamais bloqué par Apache)
+    if (!$token) {
+        $token = $_SERVER['HTTP_X_AUTH_TOKEN'] ?? '';
+        if (!$token && function_exists('getallheaders')) {
+            $h     = array_change_key_case(getallheaders(), CASE_LOWER);
+            $token = $h['x-auth-token'] ?? '';
+        }
+        $token = trim($token);
+    }
+
+    if (!$token) {
+        ob_clean(); http_response_code(401);
+        echo json_encode(['error' => 'Non authentifié'], JSON_UNESCAPED_UNICODE); exit;
+    }
+
+    $pdo  = getPDO();
+    $stmt = $pdo->prepare('SELECT user_id FROM user_sessions WHERE id = ? LIMIT 1');
+    $stmt->execute([$token]);
+    $row  = $stmt->fetch();
+
+    if (!$row) {
+        ob_clean(); http_response_code(401);
+        echo json_encode(['error' => 'Session invalide ou expirée'], JSON_UNESCAPED_UNICODE); exit;
+    }
+
+    return (int)$row['user_id'];
 }

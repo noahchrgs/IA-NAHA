@@ -3,11 +3,11 @@ require_once __DIR__ . '/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonOut(['error' => 'Méthode non autorisée'], 405);
 
+$userId = requireAuth();
 $body   = getBody();
 $planId = (int)($body['plan_id'] ?? 0);
-$userId = (int)($body['user_id'] ?? 0);
 
-if (!$planId || !$userId) jsonOut(['error' => 'Paramètres manquants'], 422);
+if (!$planId) jsonOut(['error' => 'plan_id manquant'], 422);
 
 $pdo = getPDO();
 

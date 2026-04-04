@@ -393,7 +393,9 @@
     let current    = 0;
 
     // user_id depuis localStorage
-    const USER_ID  = localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id') || null;
+    const USER_ID   = localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id') || null;
+    const getToken  = () => localStorage.getItem('naha_token') || '';
+    const authHeaders = (extra={}) => ({ 'Content-Type':'application/json', 'Authorization':'Bearer '+getToken(), 'X-Auth-Token': getToken(), ...extra });
 
     // ── Init dots ──
     function initDots() {
@@ -548,8 +550,8 @@
             if (USER_ID) {
                 await fetch(`${API}/save_profile.php`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: USER_ID, ...data }),
+                    headers: authHeaders(),
+                    body: JSON.stringify(data),
                 });
             }
 

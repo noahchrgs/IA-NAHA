@@ -22,8 +22,14 @@ if (!$prenom || !$nom || !$email || !$password) {
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     jsonOut(['error' => 'Adresse email invalide.'], 422);
 }
+if (mb_strlen($prenom) > 100 || mb_strlen($nom) > 100) {
+    jsonOut(['error' => 'Prénom ou nom trop long (max 100 caractères).'], 422);
+}
 if (strlen($password) < 8) {
     jsonOut(['error' => 'Le mot de passe doit faire au moins 8 caractères.'], 422);
+}
+if (!preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+    jsonOut(['error' => 'Le mot de passe doit contenir au moins une majuscule et un chiffre.'], 422);
 }
 
 $pdo = getPDO();
@@ -46,6 +52,13 @@ $stmt = $pdo->prepare('
 $stmt->execute([$prenom, $nom, $email, $hash]);
 $userId = (int) $pdo->lastInsertId();
 
+// ── Session ──
+$token = bin2hex(random_bytes(32));
+try {
+    $pdo->prepare('INSERT INTO user_sessions (id, user_id, payload, last_activity, ip_address) VALUES (?, ?, ?, UNIX_TIMESTAMP(), ?)')
+        ->execute([$token, $userId, '', $_SERVER['REMOTE_ADDR'] ?? '']);
+} catch (\Throwable $e) { /* non bloquant si table absente */ }
+
 // ── Log ──
 try {
     $pdo->prepare('INSERT INTO login_logs (user_id, email, ip_address, success, created_at) VALUES (?, ?, ?, 1, NOW())')
@@ -55,5 +68,6 @@ try {
 jsonOut([
     'success' => true,
     'user_id' => $userId,
+    'token'   => $token,
     'message' => 'Compte créé avec succès.',
 ]);

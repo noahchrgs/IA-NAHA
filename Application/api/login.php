@@ -17,8 +17,24 @@ $password =       $body['password'] ?? '';
 if (!$email || !$password) {
     jsonOut(['error' => 'Email et mot de passe requis.'], 422);
 }
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    jsonOut(['error' => 'Email ou mot de passe incorrect.'], 401);
+}
 
 $pdo = getPDO();
+
+// ── Rate limiting : max 10 tentatives / 15 min par IP ──
+try {
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) FROM login_logs
+        WHERE ip_address = ? AND success = 0
+        AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+    ');
+    $stmt->execute([$_SERVER['REMOTE_ADDR'] ?? '']);
+    if ((int)$stmt->fetchColumn() >= 10) {
+        jsonOut(['error' => 'Trop de tentatives. Réessayez dans 15 minutes.'], 429);
+    }
+} catch (\Throwable $e) { /* non bloquant si table absente */ }
 
 // ── Cherche l'utilisateur ──
 $stmt = $pdo->prepare('SELECT id, prenom, nom, password FROM users WHERE email = ? LIMIT 1');
