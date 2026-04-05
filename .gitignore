@@ -5,3 +5,5 @@ __pycache__/
 *.db
 .ipynb_checkpoints/
 *.DS_Store
+.omc/
+.claude/
