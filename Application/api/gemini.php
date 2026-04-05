@@ -19,7 +19,8 @@ if (!$prompt) {
 
 // ── Clé API Gemini (côté serveur uniquement) ──
 $_env = parse_ini_file(__DIR__ . '/../.env') ?: [];
-define('GEMINI_API_KEY', $_env['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?: '');
+// trim() retire les \r éventuels si le .env a été sauvegardé en CRLF sous Windows
+define('GEMINI_API_KEY', trim($_env['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?: ''));
 define('GEMINI_MODEL',   'gemini-2.5-flash');
 
 if (!GEMINI_API_KEY) {

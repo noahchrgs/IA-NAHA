@@ -1,187 +1,324 @@
-# IA-NAHA — Application de planification nutritionnelle personnalisée
-
-IA-NAHA est une application web qui génère des plans nutritionnels personnalisés grâce à l'intelligence artificielle (Google Gemini). Elle collecte le profil de l'utilisateur via un questionnaire, calcule ses besoins caloriques et en macronutriments, puis produit un plan de repas détaillé jour par jour.
+# IA-NAHA — Documentation Technique
 
 ---
 
-## Stack technique
+## 1. Prérequis
 
-| Couche | Technologie |
-|--------|-------------|
-| Frontend | HTML5, CSS3, JavaScript vanilla |
-| Backend | PHP 7.4+ avec PDO |
-| Base de données | MySQL 8.0+ |
-| IA | Google Gemini 2.5 Flash |
-| Environnement local | MAMP (Apache + MySQL + PHP) |
-| Graphiques | Chart.js |
-| Fonts | Google Fonts (Cormorant Garamond, DM Mono) |
+### Serveur local
+
+| Outil | macOS | Windows |
+|---|---|---|
+| Serveur Apache + PHP | MAMP (port **8888**) | XAMPP ou WAMP (port **80**) |
+| MySQL | MAMP (port **8889**) | XAMPP/WAMP (port **3306**) |
+| PHP | ≥ 7.2 | ≥ 7.2 |
+| Python | 3.8+ (`python3`) | 3.8+ (`python`) |
+
+### Dépendances Python
+
+```bash
+pip install flask joblib numpy pandas scikit-learn
+# optionnel mais recommandé sur Windows :
+pip install waitress
+```
+
+### Fichier `.env`
+
+Créer `Application/.env` (ne jamais le commiter) :
+
+```
+GEMINI_API_KEY=AIza...votre_clé...
+```
+
+> Clé obtenue sur : https://aistudio.google.com/app/apikey
+
+### Base de données
+
+- Créer une BDD MySQL nommée `ia-naha`
+- Importer le fichier SQL du projet
+- Vérifier dans `Application/api/config.php` :
+  - `DB_PORT` → `8889` sur MAMP, `3306` sur XAMPP/WAMP
+
+### Démarrer le serveur ML
+
+```bash
+# macOS
+python3 Application/api/ml_server.py
+
+# Windows
+python Application/api/ml_server.py
+```
+
+Le serveur Flask écoute sur `http://127.0.0.1:5050`. Il doit tourner en parallèle d'Apache pour que la prédiction de sommeil fonctionne.
 
 ---
 
-## Prérequis
+## 2. Bugs connus et solutions
 
-- **MAMP** installé et démarré (Apache sur le port `8888`, MySQL sur le port `8889`)
-- Base de données MySQL nommée `ia-naha`
-- PHP 7.4 minimum
-- Une clé API Google Gemini
+### Apache bloque le header `Authorization`
+
+**Symptôme :** toutes les requêtes authentifiées retournent `401 Non authentifié` même après connexion.
+
+**Cause :** Apache (MAMP et XAMPP) filtre le header `Authorization: Bearer` avant qu'il n'atteigne PHP.
+
+**Solution :** le fichier `Application/api/.htaccess` contient :
+```apache
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+```
+Et le frontend envoie toujours un second header `X-Auth-Token` (non bloqué par Apache) que PHP lit en fallback.
+
+> Si `.htaccess` ne fonctionne pas, vérifier que `AllowOverride All` est activé dans la config Apache du projet.
 
 ---
 
-## Installation
+### Clé Gemini invalide sur Windows
 
-### 1. Placer le projet
+**Symptôme :** la génération de plan échoue avec une erreur Gemini, alors que la clé est correcte dans `.env`.
 
-Placer le dossier dans le répertoire `htdocs` de MAMP :
+**Cause :** Notepad (Windows) sauvegarde les fichiers en `CRLF`. `parse_ini_file()` lit alors `AIza...\r` au lieu de `AIza...` — la clé est corrompue par un `\r` invisible.
 
-```
-/Applications/MAMP/htdocs/SD4/IA-NAHA/Application/
-```
-
-### 2. Créer la base de données
-
-Se connecter à MySQL (via phpMyAdmin ou terminal) et créer la base :
-
-```sql
-CREATE DATABASE `ia-naha` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+**Solution appliquée dans `gemini.php` :**
+```php
+define('GEMINI_API_KEY', trim($_env['GEMINI_API_KEY'] ?? ''));
+// trim() retire le \r de fin si le .env a été sauvegardé en CRLF
 ```
 
-### 3. Configurer la base de données
+> Toujours éditer le `.env` avec VS Code ou Notepad++ en encodage **UTF-8 sans BOM**.
 
-Éditer `api/config.php` :
+---
+
+### URL API ne fonctionne que sur macOS
+
+**Symptôme :** sur Windows avec XAMPP, toutes les requêtes échouent (ERR_CONNECTION_REFUSED).
+
+**Cause :** l'URL était hardcodée à `http://localhost:8888/...` — le port MAMP macOS.
+
+**Solution appliquée dans tous les fichiers HTML :**
+```javascript
+// Avant (cassé sur Windows)
+const API = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
+
+// Après (cross-platform)
+const API = window.location.origin + '/SD4/IA-NAHA/Application/api';
+// → http://localhost:8888/... sur MAMP
+// → http://localhost/...    sur XAMPP
+```
+
+---
+
+### Gemini renvoie du texte au lieu du JSON
+
+**Symptôme :** `"The string did not match the expected pattern"` dans Safari, `JSON.parse` échoue.
+
+**Cause :** Gemini 2.5 Flash en mode "thinking" renvoie plusieurs parts dans sa réponse. Le premier part contient sa réflexion interne (texte brut), pas le JSON.
+
+**Solution :** `thinkingBudget: 0` désactive ce comportement + le code parcourt les parts à l'envers pour prendre le bon.
+
+---
+
+### Le serveur ML ne démarre pas
+
+**Symptôme :** `ModuleNotFoundError` ou `FileNotFoundError` au lancement.
+
+**Solutions :**
+- Installer les dépendances : `pip install flask joblib numpy pandas scikit-learn`
+- Vérifier que les fichiers `.joblib` existent dans `/IA-NAHA/modeles/`
+- Sur Windows, lancer depuis le répertoire du projet en tant qu'administrateur si besoin
+
+---
+
+## 3. Code important commenté
+
+### `config.php` — Connexion BDD (`getPDO`)
 
 ```php
-define('DB_HOST', 'localhost');
-define('DB_PORT', '8889');       // Port MAMP par défaut
-define('DB_NAME', 'ia-naha');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
+function getPDO(): PDO {
+    static $pdo = null;
+    // Instance unique (singleton) — évite d'ouvrir plusieurs connexions MySQL
+    if ($pdo) return $pdo;
+
+    $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    try {
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,   // lance des exceptions sur erreur SQL
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,         // retourne des tableaux associatifs
+            PDO::ATTR_EMULATE_PREPARES   => false,                    // requêtes préparées natives (sécurité)
+        ]);
+    } catch (PDOException $e) {
+        ob_clean();
+        http_response_code(500);
+        echo json_encode(['error' => 'Connexion BDD impossible : ' . $e->getMessage()]);
+        exit;
+    }
+    return $pdo;
+}
 ```
 
-### 4. Configurer la clé API Gemini
+---
 
-Éditer `api/gemini.php` et remplacer la clé API :
+### `config.php` — Authentification (`requireAuth`)
 
 ```php
-define('GEMINI_API_KEY', 'VOTRE_CLE_API_ICI');
-```
+function requireAuth(): int {
+    // Apache/MAMP peut bloquer le header Authorization standard.
+    // On essaie 4 sources dans l'ordre, de la plus standard à la plus permissive.
 
-### 5. Lancer l'application
+    $auth = $_SERVER['HTTP_AUTHORIZATION']           // source standard
+         ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']  // après une RewriteRule Apache
+         ?? '';
 
-Ouvrir dans le navigateur :
+    if (!$auth && function_exists('getallheaders')) {
+        $h    = array_change_key_case(getallheaders(), CASE_LOWER);
+        $auth = $h['authorization'] ?? '';
+    }
 
-```
-http://localhost:8888/SD4/IA-NAHA/Application/
-```
+    $token = trim(str_replace('Bearer', '', $auth)); // extrait le token du "Bearer <token>"
 
----
+    // Fallback : header X-Auth-Token envoyé par le frontend en parallèle.
+    // Ce header custom n'est jamais bloqué par Apache.
+    if (!$token) {
+        $token = $_SERVER['HTTP_X_AUTH_TOKEN'] ?? '';
+        if (!$token && function_exists('getallheaders')) {
+            $h     = array_change_key_case(getallheaders(), CASE_LOWER);
+            $token = $h['x-auth-token'] ?? '';
+        }
+        $token = trim($token);
+    }
 
-## Structure du projet
+    if (!$token) {
+        ob_clean(); http_response_code(401);
+        echo json_encode(['error' => 'Non authentifié']); exit;
+    }
 
-```
-Application/
-├── index.html          # Page d'accueil (landing page)
-├── login.html          # Connexion et inscription
-├── onboarding.html     # Questionnaire en 9 étapes
-├── generate.html       # Génération et affichage du plan IA
-├── dashboard.html      # Tableau de bord utilisateur
-│
-└── api/
-    ├── config.php       # Configuration BDD + fonctions utilitaires
-    ├── login.php        # Authentification utilisateur
-    ├── register.php     # Inscription
-    ├── get_user.php     # Récupération du profil
-    ├── get_plans.php    # Liste et détail des plans
-    ├── save_plan.php    # Sauvegarde d'un plan généré
-    ├── save_profile.php # Mise à jour du profil
-    ├── delete_plan.php  # Suppression d'un plan
-    └── gemini.php       # Proxy vers l'API Google Gemini
-```
+    // Vérifie que le token existe en base → retourne l'user_id associé
+    $stmt = getPDO()->prepare('SELECT user_id FROM user_sessions WHERE id = ? LIMIT 1');
+    $stmt->execute([$token]);
+    $row = $stmt->fetch();
 
----
+    if (!$row) {
+        ob_clean(); http_response_code(401);
+        echo json_encode(['error' => 'Session invalide ou expirée']); exit;
+    }
 
-## Parcours utilisateur
-
-```
-Page d'accueil (index.html)
-    │
-    ├─ [Non connecté] → Connexion / Inscription (login.html)
-    │                        │
-    │                        └─ Questionnaire (onboarding.html)  ← 9 étapes
-    │                                 │
-    │                                 └─ Génération IA (generate.html)
-    │                                          │
-    │                                          └─ Tableau de bord (dashboard.html)
-    │
-    └─ [Connecté] → Tableau de bord (dashboard.html)
-                         ├─ Vue d'ensemble + graphiques
-                         ├─ Liste des plans sauvegardés
-                         ├─ Détail d'un plan (repas par jour)
-                         └─ Profil utilisateur
+    return (int)$row['user_id'];
+}
 ```
 
 ---
 
-## Fonctionnalités
+### `login.php` — Connexion avec rate limiting
 
-### Authentification
-- Inscription avec validation email et indicateur de force du mot de passe
-- Connexion avec option "Se souvenir de moi"
-- Gestion de session via `localStorage` (`naha_user_id`)
+```php
+// Bloque une IP après 10 échecs en 15 minutes (brute-force protection)
+$stmt = $pdo->prepare('
+    SELECT COUNT(*) FROM login_logs
+    WHERE ip_address = ? AND success = 0
+    AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+');
+$stmt->execute([$_SERVER['REMOTE_ADDR'] ?? '']);
+if ((int)$stmt->fetchColumn() >= 10) {
+    jsonOut(['error' => 'Trop de tentatives. Réessayez dans 15 minutes.'], 429);
+}
 
-### Questionnaire d'onboarding (9 étapes)
-1. Prénom
-2. Âge
-3. Sexe
-4. Poids (kg)
-5. Taille (cm)
-6. Niveau d'activité (5 niveaux : sédentaire → athlète)
-7. Objectifs (multi-choix : perte de poids, prise de masse, endurance, etc.)
-8. Restrictions alimentaires (sans gluten, halal, vegan, allergies personnalisées, etc.)
-9. Configuration du plan (durée 1/3/7/14 jours, nombre de repas par jour)
+// password_verify() compare le mot de passe avec le hash bcrypt en base.
+// Le message d'erreur est volontairement identique qu'il s'agisse d'un
+// mauvais email ou d'un mauvais mot de passe (évite l'énumération de comptes).
+if (!$user || !password_verify($password, $user['password'])) {
+    jsonOut(['error' => 'Email ou mot de passe incorrect.'], 401);
+}
 
-### Génération IA
-- Calcul du BMR (métabolisme de base) selon âge, poids, taille, sexe et activité
-- Calcul des macros cibles (protéines, glucides, lipides)
-- Génération du plan via Google Gemini 2.5 Flash
-- Base alimentaire officielle CIQUAL ANSES (2 976 aliments)
-- Plan détaillé jour par jour avec aliments et grammages
-
-### Tableau de bord
-- KPIs : nombre de plans, calories et protéines du dernier plan, jours planifiés au total
-- Graphique donut : répartition des macronutriments
-- Graphique linéaire : évolution des calories sur les derniers plans
-- Grille des plans avec aperçu rapide
-- Détail complet de chaque plan (repas, aliments, quantités)
-- Suppression de plans
+// Token de session : 32 octets aléatoires = 64 caractères hex, non-devinable
+$token = bin2hex(random_bytes(32));
+```
 
 ---
 
-## API — Endpoints
+### `gemini.php` — Proxy Gemini
 
-| Endpoint | Méthode | Description |
-|----------|---------|-------------|
-| `api/login.php` | POST | Connexion utilisateur |
-| `api/register.php` | POST | Inscription |
-| `api/get_user.php` | GET | Récupérer le profil (`?user_id=`) |
-| `api/get_plans.php` | GET | Lister les plans (`?user_id=`) ou détail (`?plan_id=`) |
-| `api/save_plan.php` | POST | Sauvegarder un plan généré |
-| `api/save_profile.php` | POST | Mettre à jour le profil |
-| `api/delete_plan.php` | POST | Supprimer un plan |
-| `api/gemini.php` | POST | Appel proxifié à l'API Gemini |
+```php
+// La clé API n'est jamais exposée côté client.
+// PHP lit le .env côté serveur et injecte la clé dans la requête.
+// trim() retire un éventuel \r si le .env a été sauvegardé en CRLF (Windows).
+$_env = parse_ini_file(__DIR__ . '/../.env') ?: [];
+define('GEMINI_API_KEY', trim($_env['GEMINI_API_KEY'] ?? getenv('GEMINI_API_KEY') ?: ''));
+
+// thinkingBudget: 0 désactive le mode "thinking" de Gemini 2.5 Flash.
+// Sans ça, la réponse contient plusieurs "parts" dont le premier est la
+// réflexion interne du modèle (thought:true) — pas du JSON parseable.
+'thinkingConfig' => ['thinkingBudget' => 0]
+
+// Fallback : si malgré tout le thinking est actif, on parcourt les parts
+// à l'envers pour ignorer les thoughts et prendre le vrai contenu.
+foreach (array_reverse($parts) as $part) {
+    if (!($part['thought'] ?? false) && isset($part['text'])) {
+        $text = $part['text'];
+        break;
+    }
+}
+
+// trim() sur la clé + mb_convert_encoding évitent que json_encode()
+// retourne false sur des caractères UTF-8 invalides dans la réponse Gemini.
+$text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+```
 
 ---
 
-## Sécurité
+### `save_plan.php` — Encodages pour le modèle ML
 
-- Mots de passe hashés avec `bcrypt` (`password_hash` / `password_verify`)
-- Requêtes SQL préparées via PDO (protection contre les injections SQL)
-- Vérification de propriété avant suppression (un utilisateur ne peut supprimer que ses propres plans)
-- Journalisation des tentatives de connexion (IP, succès/échec)
+```php
+// Ces fonctions convertissent les valeurs texte du formulaire en entiers.
+// Les mappings DOIVENT rester synchronisés avec ml_server.py.
+
+function encodeGender(string $v): int {
+    return in_array(strtolower($v), ['homme', 'm', 'male']) ? 1 : 0;
+}
+
+function encodeIntensity(string $v): int {
+    $map = [
+        'high'=>0, 'actif'=>0, 'tres_actif'=>0,  // haute intensité → 0
+        'low'=>1, 'sedentaire'=>1, 'leger'=>1,    // basse intensité → 1
+        'medium'=>2, 'modere'=>2,                 // intensité modérée → 2
+    ];
+    return $map[strtolower($v)] ?? 2; // valeur par défaut : modéré
+}
+
+// BMI calculé côté serveur à partir du poids et de la taille.
+// On ne fait pas confiance à une valeur éventuellement envoyée par le client.
+$bmi = ($poids > 0 && $taille > 0)
+    ? round($poids / (($taille / 100) ** 2), 2)
+    : null;
+```
 
 ---
 
-## Notes
+### `ml_server.py` — Prédiction du sommeil
 
-- Les URLs de l'API sont codées en dur dans les fichiers HTML (`http://localhost:8888/SD4/IA-NAHA/Application/api`). À externaliser avant tout déploiement en production.
-- La clé API Gemini dans `api/gemini.php` ne doit pas être committée dans un dépôt public.
-- Un `package.json` React est présent mais non utilisé — le frontend est intégralement en JavaScript vanilla.
+```python
+# os.path.join est cross-platform : fonctionne sur macOS et Windows.
+# Ne jamais hardcoder des slashes ou backslashes.
+BASE_DIR  = os.path.dirname(os.path.abspath(__file__))  # dossier du script
+MODEL_DIR = os.path.join(BASE_DIR, '..', '..', 'modeles')
+
+# Le scaler (StandardScaler) doit être celui sauvegardé à l'entraînement.
+# Appliquer un scaler différent fausserait complètement la prédiction.
+x_scaled = scaler.transform(features)
+pred     = float(model.predict(x_scaled)[0])
+
+# Clamping entre 4h et 12h : le modèle peut extrapoler hors des bornes
+# raisonnables pour des profils extrêmes — on limite la valeur retournée.
+pred = round(max(4.0, min(12.0, pred)), 1)
+```
+
+---
+
+### `generate.html` — Double header d'authentification
+
+```javascript
+// Authorization: Bearer → header standard, peut être bloqué par Apache.
+// X-Auth-Token → header custom, jamais bloqué, lu en fallback côté PHP.
+// Les deux sont envoyés systématiquement sur toute requête protégée.
+const authHeaders = {
+    'Content-Type':  'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('naha_token')}`,
+    'X-Auth-Token':   localStorage.getItem('naha_token'),
+};
+```

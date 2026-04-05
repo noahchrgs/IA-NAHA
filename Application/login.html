@@ -180,7 +180,7 @@
 </div>
 
 <script>
-    const API = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
+    const API = window.location.origin + '/SD4/IA-NAHA/Application/api';
     // ── Tab switch ──
     function switchTab(tab, btn) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

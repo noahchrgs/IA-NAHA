@@ -108,9 +108,21 @@
   "hotPaths": [
     {
       "path": "Application/api/gemini.php",
-      "accessCount": 8,
-      "lastAccessed": 1775300084348,
+      "accessCount": 10,
+      "lastAccessed": 1775381615325,
       "type": "file"
+    },
+    {
+      "path": "Application/generate.html",
+      "accessCount": 9,
+      "lastAccessed": 1775381607075,
+      "type": "file"
+    },
+    {
+      "path": "Application/onboarding.html",
+      "accessCount": 8,
+      "lastAccessed": 1775381603726,
+      "type": "directory"
     },
     {
       "path": "Notebook_DataViz.ipynb",
@@ -119,22 +131,46 @@
       "type": "directory"
     },
     {
+      "path": "Application/dashboard.html",
+      "accessCount": 7,
+      "lastAccessed": 1775381605146,
+      "type": "file"
+    },
+    {
+      "path": "Application/dataviz.html",
+      "accessCount": 7,
+      "lastAccessed": 1775381605921,
+      "type": "file"
+    },
+    {
       "path": "Application/api/config.php",
-      "accessCount": 4,
-      "lastAccessed": 1775300471608,
+      "accessCount": 6,
+      "lastAccessed": 1775380296065,
       "type": "file"
     },
     {
-      "path": "Application/generate.html",
+      "path": "Application/login.html",
       "accessCount": 4,
-      "lastAccessed": 1775300572373,
+      "lastAccessed": 1775381581606,
       "type": "file"
     },
     {
-      "path": "Application/onboarding.html",
+      "path": "Application/api/ml_server.py",
       "accessCount": 3,
-      "lastAccessed": 1775300460301,
+      "lastAccessed": 1775380853920,
+      "type": "file"
+    },
+    {
+      "path": "Application",
+      "accessCount": 3,
+      "lastAccessed": 1775381577255,
       "type": "directory"
+    },
+    {
+      "path": "TECHNICAL.md",
+      "accessCount": 3,
+      "lastAccessed": 1775381787092,
+      "type": "file"
     },
     {
       "path": "database/ia-naha.sql",
@@ -149,33 +185,27 @@
       "type": "file"
     },
     {
-      "path": "Application/dashboard.html",
-      "accessCount": 2,
-      "lastAccessed": 1775300418148,
-      "type": "file"
-    },
-    {
-      "path": "Application/dataviz.html",
-      "accessCount": 2,
-      "lastAccessed": 1775301388093,
-      "type": "file"
-    },
-    {
-      "path": "Application/api/ml_server.py",
-      "accessCount": 2,
-      "lastAccessed": 1775302124063,
-      "type": "file"
-    },
-    {
       "path": "README.md",
       "accessCount": 2,
       "lastAccessed": 1775302482877,
       "type": "file"
     },
     {
+      "path": "",
+      "accessCount": 2,
+      "lastAccessed": 1775324110910,
+      "type": "directory"
+    },
+    {
       "path": "Application/api/save_plan.php",
-      "accessCount": 1,
-      "lastAccessed": 1775299206753,
+      "accessCount": 2,
+      "lastAccessed": 1775380848618,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/login.php",
+      "accessCount": 2,
+      "lastAccessed": 1775381723077,
       "type": "file"
     },
     {
@@ -185,22 +215,22 @@
       "type": "file"
     },
     {
-      "path": "Application/api/login.php",
-      "accessCount": 1,
-      "lastAccessed": 1775299226047,
-      "type": "file"
-    },
-    {
-      "path": "Application/login.html",
-      "accessCount": 1,
-      "lastAccessed": 1775299227061,
-      "type": "file"
-    },
-    {
       "path": "Application/api",
       "accessCount": 1,
       "lastAccessed": 1775302091911,
       "type": "directory"
+    },
+    {
+      "path": "Application/api/register.php",
+      "accessCount": 1,
+      "lastAccessed": 1775380853989,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/get_plans.php",
+      "accessCount": 1,
+      "lastAccessed": 1775381723666,
+      "type": "file"
     }
   ],
   "userDirectives": []
