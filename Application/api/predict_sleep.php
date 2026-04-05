@@ -16,7 +16,7 @@ if (!$body) {
 }
 
 $_env    = @parse_ini_file(__DIR__ . '/../.env') ?: [];
-$mlUrl   = trim($_env['ML_SERVER_URL'] ?? 'http://127.0.0.1:10000') . '/predict';
+$mlUrl   = trim($_env['ML_SERVER_URL'] ?? 'https://ia-naha.onrender.com') . '/predict';
 $ch = curl_init($mlUrl);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
