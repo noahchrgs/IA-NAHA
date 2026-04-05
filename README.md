@@ -260,22 +260,6 @@ The application is structured around 6 pages:
 | `dashboard.html` | Personal dashboard - saved plans, macros, history |
 | `dataviz.html` | Data analysis page - EDA results + ML model explanations |
 
-### Architecture
-
-```
-Browser (HTML/CSS/JS)
-        │
-        ▼
-PHP API (localhost:8888)
-    ├── MySQL database (users, plans, CIQUAL)
-    ├── Gemini AI proxy (gemini.php)
-    └── ML prediction endpoint (predict_sleep.php)
-              │
-              ▼
-        Flask server (port 5050)
-        └── LinearRegression + StandardScaler (.joblib)
-```
-
 ---
 
 ## 🛠️ Technologies
@@ -641,22 +625,6 @@ L'application est structurée autour de 6 pages :
 | `generate.html` | Génération de plans alimentaires via Gemini 2.5 Flash + CIQUAL |
 | `dashboard.html` | Dashboard personnel - plans sauvegardés, macros, historique |
 | `dataviz.html` | Page d'analyses - résultats EDA + explication du modèle ML |
-
-### Architecture
-
-```
-Navigateur (HTML/CSS/JS)
-        │
-        ▼
-API PHP (localhost:8888)
-    ├── Base MySQL (utilisateurs, plans, CIQUAL)
-    ├── Proxy Gemini AI (gemini.php)
-    └── Endpoint prédiction ML (predict_sleep.php)
-              │
-              ▼
-        Serveur Flask (port 5050)
-        └── LinearRegression + StandardScaler (.joblib)
-```
 
 ---
 
