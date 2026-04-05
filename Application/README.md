@@ -54,7 +54,67 @@ Le serveur Flask écoute sur `http://127.0.0.1:5050`. **Il doit tourner en paral
 
 ---
 
-## 2. Bugs connus et solutions
+## 2. Flux utilisateur
+
+```
+login.html
+  │
+  ├─ Connexion  ──────────────────────────────► dashboard.html
+  │                                                   │
+  └─ Inscription ──► onboarding.html                  ├─ Mes plans ──► dashboard.html
+                          │                           └─ Nouveau plan ─┐
+                          └─ Formulaire profil ──────────────────────► generate.html
+                                                                            │
+                                                                     Gemini AI + ML
+                                                                            │
+                                                                     Plan nutritionnel
+                                                                            │
+                                                              (sauvegardé en BDD)
+```
+
+`dataviz.html` est accessible depuis la sidebar à tout moment — il affiche les analyses EDA sur les datasets d'entraînement.
+
+---
+
+## 3. Schéma de la base de données
+
+| Table | Rôle |
+|---|---|
+| `users` | Compte + profil santé complet (âge, poids, taille, BMI, intensité, objectif, restrictions…) |
+| `user_sessions` | Tokens de session Bearer (auth sans cookie) |
+| `login_logs` | Historique des connexions + rate limiting anti brute-force |
+| `nutrition_plans` | Plans nutritionnels générés (calories, macros, BMR, durée) |
+| `meals` | Repas détaillés liés à un plan (`plan_id`) |
+| `ciqual_nutrition` | Base alimentaire ANSES CIQUAL (nom, groupe, kcal, protéines, glucides, lipides, fibres) |
+| `password_resets` | Tokens de réinitialisation de mot de passe |
+| `activite_globale` | Dataset Kaggle — Gym Members Exercise Tracking (entraînement ML) |
+| `activite_uniquement_sportifs` | Sous-ensemble filtré du dataset activité |
+| `sommeil_logs` | Dataset Kaggle — Sleep data (entraînement ML) |
+| `sommeil_uniquement_sportifs` | Sous-ensemble filtré du dataset sommeil |
+| `fitness` | Dataset complémentaire fitness |
+| `compendium_sports` | Référentiel MET des activités sportives |
+
+Le MCD complet est disponible dans `database/MCD.png`.
+
+---
+
+## 4. Modèles ML
+
+Les fichiers `.joblib` dans `/modeles/` sont générés par les notebooks Python d'entraînement :
+
+| Fichier | Rôle |
+|---|---|
+| `modele_machine_learning.joblib` | Modèle de régression linéaire — prédit le temps de sommeil (heures) |
+| `scaler_machine_learning.joblib` | StandardScaler ajusté sur les données d'entraînement — **doit être le même que celui utilisé à l'entraînement** |
+
+**Features utilisées par le modèle (10 variables) :**
+`age`, `gender`, `bmi`, `activity_type`, `intensity`, `duration_minutes`, `daily_steps`, `stress_level`, `hydration_level`, `smoking_status`
+
+> Pour régénérer les modèles : exécuter les notebooks dans `/notebooks/` puis copier les `.joblib` produits dans `/modeles/`.
+
+---
+
+## 5. Bugs connus et solutions
 
 ### Apache bloque le header `Authorization`
 
@@ -182,7 +242,7 @@ CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
 
 ---
 
-## 3. Code important commenté
+## 6. Code important commenté
 
 ### `config.php` — Connexion BDD (`getPDO`)
 
@@ -360,7 +420,7 @@ const authHeaders = {
 
 ---
 
-## 4. Mise en ligne (déploiement)
+## 7. Mise en ligne (déploiement)
 
 L'application nécessite **deux hébergements séparés** car elle combine PHP/MySQL et un serveur Python Flask.
 
