@@ -10,15 +10,22 @@ ob_start();
 error_reporting(0);
 ini_set('display_errors', '0');
 
-define('DB_HOST', 'localhost');
-define('DB_PORT', '8889');       // MAMP = 8889, XAMPP = 3306
-define('DB_NAME', 'ia-naha');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
+// Lecture du .env pour surcharger les valeurs par défaut
+$_cfg = @parse_ini_file(__DIR__ . '/../.env') ?: [];
+
+define('DB_HOST', trim($_cfg['DB_HOST'] ?? 'localhost'));
+define('DB_PORT', trim($_cfg['DB_PORT'] ?? '8889'));  // MAMP=8889, XAMPP/WAMP=3306
+define('DB_NAME', trim($_cfg['DB_NAME'] ?? 'ia-naha'));
+define('DB_USER', trim($_cfg['DB_USER'] ?? 'root'));
+define('DB_PASS', trim($_cfg['DB_PASS'] ?? 'root'));
 
 // Headers CORS + JSON
 header('Content-Type: application/json; charset=utf-8');
-$_allowed_origins = ['http://localhost:8888','http://127.0.0.1:8888','http://localhost','http://127.0.0.1'];
+$_allowed_origins = [
+    'http://localhost:8888', 'http://127.0.0.1:8888',  // MAMP macOS
+    'http://localhost:8080', 'http://127.0.0.1:8080',  // XAMPP alternatif
+    'http://localhost',      'http://127.0.0.1',        // XAMPP/WAMP port 80
+];
 $_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 header('Access-Control-Allow-Origin: ' . (in_array($_origin, $_allowed_origins, true) ? $_origin : 'http://localhost:8888'));
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');

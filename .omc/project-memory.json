@@ -143,16 +143,16 @@
       "type": "file"
     },
     {
+      "path": "Application/api/config.php",
+      "accessCount": 8,
+      "lastAccessed": 1775383547656,
+      "type": "file"
+    },
+    {
       "path": "Notebook_DataViz.ipynb",
       "accessCount": 7,
       "lastAccessed": 1775300939230,
       "type": "directory"
-    },
-    {
-      "path": "Application/api/config.php",
-      "accessCount": 6,
-      "lastAccessed": 1775380296065,
-      "type": "file"
     },
     {
       "path": "README.md",
@@ -167,15 +167,15 @@
       "type": "directory"
     },
     {
-      "path": "Application/api/ml_server.py",
-      "accessCount": 3,
-      "lastAccessed": 1775380853920,
+      "path": "TECHNICAL.md",
+      "accessCount": 4,
+      "lastAccessed": 1775383619710,
       "type": "file"
     },
     {
-      "path": "TECHNICAL.md",
+      "path": "Application/api/ml_server.py",
       "accessCount": 3,
-      "lastAccessed": 1775381787092,
+      "lastAccessed": 1775380853920,
       "type": "file"
     },
     {
@@ -248,6 +248,12 @@
       "path": "Application/index.html",
       "accessCount": 2,
       "lastAccessed": 1775382857939,
+      "type": "file"
+    },
+    {
+      "path": "Application/.env.example",
+      "accessCount": 2,
+      "lastAccessed": 1775383561975,
       "type": "file"
     },
     {
