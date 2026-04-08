@@ -446,6 +446,7 @@ IA-NAHA/
 │   │   └── ml_server.py                # Serveur Flask (port 5050) - modèle ML
 │   │
 │   ├── assets/css/                     # Feuilles de style
+│   ├── assets/js                       # Scripts JS
 │   ├── index.html                      # Page d'accueil
 │   ├── login.html                      # Connexion / Inscription
 │   ├── onboarding.html                 # Formulaire profil utilisateur
