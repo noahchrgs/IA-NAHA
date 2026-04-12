@@ -365,6 +365,37 @@ Features:       10 variables
 This project was developed for academic purposes as part of the L3 MIASHS curriculum at Université de Montpellier. All data sources are publicly available (Kaggle, ANSES CIQUAL, PA Compendium).
 
 ---
+## Credits and Sources
+IA-NAHA was built using a comprehensive stack of modern engineering tools. Below is the full list of resources utilized to bring this ecosystem to life.
+
+#### 🤖 Artificial Intelligence (Assistance & Generation)
+
+- **Google Gemini (1.5 Pro & 2.5 Flash)**: Architectural support, technical writing, and meal plan generation engine.  
+- **Anthropic Claude 3.5 Sonnet**: Algorithmic optimization and PHP/Python code structuring.  
+- **OpenAI ChatGPT (GPT-4)**: Debugging assistance, code review, and functional brainstorming.  
+- **Perplexity AI**: Real-time technical documentation search and verification.  
+
+#### 💻 Development & Frameworks
+
+- **Chart.js**: JavaScript library for dynamic data visualization and KPIs.  
+- **Flask (Python)**: Micro-framework for the Machine Learning server.  
+- **PHP PDO**: Database interface for securing MySQL queries.  
+
+#### ☁️ Infrastructure & Deployment
+
+- **Render.com**: Hosting and continuous deployment of the Flask ML server.  
+- **InfinityFree**: Apache/PHP hosting and MySQL database management.  
+- **GitHub & Git**: Version control and technical collaboration.  
+- **VS Code / Cursor**: Development environments for coding and integration.  
+
+#### 📊 Data, Science & Community
+
+- **ANSES (CIQUAL Table)**: Official nutritional reference (2,976 food items).  
+- **Kaggle**: Raw datasets used for model training (2,011 profiles).  
+- **Stack Overflow & MDN Web Docs**: Community support for troubleshooting and web standards.
+
+
+
 
 *IA-NAHA · L3 MIASHS · Université de Montpellier · 2025–2026*
 # 🌿 IA-NAHA - Intelligence Nutritionnelle & Prédiction de la Récupération
@@ -376,7 +407,7 @@ This project was developed for academic purposes as part of the L3 MIASHS curric
 
 ## 🔗 Démonstration en ligne
 
-> 🌐 **[ia-naha.fr](https://ianaha.rf.gd/IA-NAHA/Application/index.html)** *(remplacer par l'URL de production)*
+> 🌐 **[ia-naha.fr](https://ianaha.rf.gd/IA-NAHA/Application/index.html)**
 
 ---
 
@@ -771,5 +802,39 @@ Features :      10 variables
 Ce projet a été développé dans un cadre académique dans le cadre du cursus L3 MIASHS à l'Université de Montpellier. Toutes les sources de données sont publiquement disponibles (Kaggle, ANSES CIQUAL, PA Compendium).
 
 ---
+
+## 🛠️ Crédits et Sources 
+
+Ce projet est le résultat d'un travail d'équipe assisté par les meilleures technologies actuelles. Voici l'ensemble des ressources mobilisées pour la réalisation de l'écosystème IA-NAHA.
+
+#### 🤖 Intelligence Artificielle (Assistance et Génération)
+
+- **Google Gemini (1.5 Pro & 2.5 Flash)** : Support d'architecture, rédaction technique et moteur de génération des plans alimentaires.  
+- **Anthropic Claude 3.5 Sonnet** : Optimisation algorithmique et structuration fine du code PHP/Python.  
+- **OpenAI ChatGPT (GPT-4)** : Aide au débogage, revue de code et brainstorming fonctionnel.  
+- **Perplexity AI** : Recherche documentaire et vérification de sources techniques en temps réel.  
+
+#### 💻 Développement et Frameworks
+
+- **Chart.js** : Librairie JavaScript pour la visualisation dynamique des données et KPIs.  
+- **Flask (Python)** : Micro-framework utilisé pour le serveur de Machine Learning.  
+- **PHP PDO** : Interface de programmation pour la sécurisation des requêtes MySQL.  
+
+#### ☁️ Infrastructure et Déploiement
+
+- **Render.com** : Hébergement et déploiement continu du serveur ML Flask.  
+- **InfinityFree** : Hébergement Apache/PHP et gestion de la base de données MySQL.  
+- **GitHub & Git** : Gestion des versions et collaboration technique.  
+- **VS Code / Cursor** : Environnements de développement pour le codage et l'intégration.  
+
+#### 📊 Données, Science et Communauté
+
+- **ANSES (Table CIQUAL)** : Référentiel nutritionnel officiel (2 976 aliments).  
+- **Kaggle** : Jeux de données bruts pour l'entraînement du modèle (2 011 profils).  
+- **Stack Overflow & MDN Web Docs** : Support communautaire pour la résolution de bugs et standards web.  
+
+---
+
+
 
 *IA-NAHA · L3 MIASHS · Université de Montpellier · 2025–2026*
